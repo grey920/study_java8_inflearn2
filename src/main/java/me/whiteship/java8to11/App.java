@@ -31,13 +31,18 @@ public class App {
         LocalDate now = LocalDate.now(); // 해당 소스가 돌아가는 서버의 시스템 zone 시간대를 사용한다
         System.out.println( "now = " + now );
         LocalDateTime birthDay = LocalDateTime.of( 1992, 1, 18, 0, 0, 0 );
+        System.out.println( "birthDay = " + birthDay );
         // 특정 zone의 시간을 보고싶다면,,
         ZonedDateTime nowInKorea = ZonedDateTime.now( ZoneId.of( "Asia/Seoul" ) );
         System.out.println( "nowInKorea = " + nowInKorea );
+        ZonedDateTime birthDayZonedDateTime = ZonedDateTime.of( birthDay, ZoneId.of( "Asia/Seoul" ) );
+        System.out.println( "birthDayZonedDateTime = " + birthDayZonedDateTime );
 
         Instant nowInstant = Instant.now();
         ZonedDateTime zonedDateTime1 = nowInstant.atZone( ZoneId.of( "Asia/Seoul" ) );
         System.out.println( "zonedDateTime1 = " + zonedDateTime1 );
+        LocalDateTime localDateTime1 = zonedDateTime1.toLocalDateTime();
+        System.out.println( "localDateTime1 = " + localDateTime1 );
         /* Instant <-> ZonedDateTime <-> LocalDateTime */
 
         //===============
