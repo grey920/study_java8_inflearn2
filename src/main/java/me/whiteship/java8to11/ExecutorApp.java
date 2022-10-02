@@ -10,7 +10,7 @@ public class ExecutorApp {
 
         // static factory method를 사용하여 만들 수 있다
 //        ExecutorService executorService = Executors.newFixedThreadPool( 3 );
-
+//
 //        executorService.submit( getRunnable( "Hello" ) );
 //        executorService.submit( getRunnable( "Grey" ) );
 //        executorService.submit( getRunnable( "The" ) );
