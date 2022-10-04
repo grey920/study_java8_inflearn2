@@ -12,21 +12,21 @@ public class CallableApp2 {
     public static void main ( String[] args ) throws ExecutionException, InterruptedException {
         // Single Thread로 ExecutorService 생성
 //        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        ExecutorService executorService = Executors.newFixedThreadPool( 2 );
+        ExecutorService executorService = Executors.newFixedThreadPool( 1 );
 
         // 여러개의 작업 정의
         Callable<String> hello = () -> {
-            Thread.sleep( 4000L );
+//            Thread.sleep( 4000L );
             return "Hello";
         };
 
         Callable<String> java = () -> {
-            Thread.sleep( 3000L );
+//            Thread.sleep( 2000L );
             return "Java";
         };
 
         Callable<String> grey = () -> {
-            Thread.sleep( 1000L );
+//            Thread.sleep( 2000L );
             return "Grey";
         };
 
