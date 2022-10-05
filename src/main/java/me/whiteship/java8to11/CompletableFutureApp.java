@@ -121,7 +121,7 @@ public class CompletableFutureApp {
 
         // thenCombine() : 서로 연관관계가 없는 경우 비동기적인 작업을 동시에 처리하는 방법
         // ( 예, A는 애플 주식 정보 조회하고 B는 삼성 주식 조회할 때 따로 가져오는 경우 -> A 조회 끝날때까지 B가 기다릴 필요없이 A와 B 모두 던져놓고 둘 다 결과가 왔을 때 뭔가를 하고싶은 경우 사용 )
-        CompletableFuture<String> future9_2 = hello.thenCombine( getWorld("Hello"), ( h, w ) -> h + " " + w );// BiFunction을 사용
+        CompletableFuture<String> future9_2 = hello.thenCombine( getWorld("thenCombine"), ( h, w ) -> h + " " + w );// BiFunction을 사용
         System.out.println( "future9_2 thenCombine = " + future9_2.get() );
 
 
@@ -129,14 +129,58 @@ public class CompletableFutureApp {
         // allOf에 넘어간 일들이 다 끝났을 때 .thenApply나 thenAccept 등 추가적인 콜백을 수행할 수 있다.
         // [주의!!] allOf의 인자가 같은 타입이라는 보장도 없고, 수행 중에 에러가 날 수도 있다. 아래 예시는 인자의 타입이 다른 경우라 null이 출력된다
         CompletableFuture<Void> future9_3 = CompletableFuture.allOf( hello, getIntegerWorld( 1 ) ).thenAccept( System.out::println );
-        System.out.println( "future9_3 = " + future9_3.get() );
+        future9_3.get(); //null 출력!
+
+        // anyOf() : 빨리 끝나는 것 결과 아무거나 하나 받아서 실행
+        CompletableFuture<Void> future9_4 = CompletableFuture.anyOf( hello, getWorld( "anyOf" ) ).thenAccept( System.out::println );
+        future9_4.get();
+
+
+        System.out.println(":::::::::::::::::::: 예외처리 ::::::::::::::::::");
+
+        boolean throwError = true;
+
+        // exceptionally
+        CompletableFuture<String> helloErr = CompletableFuture.supplyAsync( () -> {
+            if ( throwError ) {
+                throw new IllegalArgumentException();
+            }
+
+            System.out.println( "Hello " + Thread.currentThread().getName() );
+            return "Hello";
+        } ).exceptionally( exceptionType -> { // 에러가 발생하면 exceptionally 에서 에러타입을 받아 무언가를 리턴할 수 있다.
+            // 에러 공통 처리
+            System.out.println( "ex = " + exceptionType );
+            return "[exceptionally] Error!";
+        });
+
+        System.out.println( helloErr.get() );
+
+        // handle : exceptionally 보다 좀 더 일반적으로 사용할 수 있음 (정상종료와 에러상황 둘 다 쓸 수 있음)
+        CompletableFuture<String> helloHandle = CompletableFuture.supplyAsync( () -> {
+            if ( throwError ) {
+                throw new IllegalArgumentException();
+            }
+
+            System.out.println( "Hello " + Thread.currentThread().getName() );
+            return "Hello";
+        } ).handle( ( result, ex ) -> { // BiFunction ( 정상상황의 결과값, 에러상황의 에러 )
+            // 에러 상황 처리
+            if ( ex != null ) {
+                System.out.println( "ex = " + ex );
+                return "[handle] Error!";
+            }
+            return result;
+        });
+
+        System.out.println( helloHandle.get() );
 
 
     }
 
     private static CompletableFuture<String> getWorld ( String msg ) {
         return CompletableFuture.supplyAsync( () -> {
-            System.out.println( msg + "World 9 " + Thread.currentThread().getName() );
+            System.out.println( msg + " World " + Thread.currentThread().getName() );
             return msg + " World";
         } );
     }
