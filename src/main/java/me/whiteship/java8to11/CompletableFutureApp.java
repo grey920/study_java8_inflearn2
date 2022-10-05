@@ -127,7 +127,8 @@ public class CompletableFutureApp {
 
         // allOf() : 2개 이상일 때 여러 task들을 다 합쳐서 실행
         // allOf에 넘어간 일들이 다 끝났을 때 .thenApply나 thenAccept 등 추가적인 콜백을 수행할 수 있다.
-        // [주의!!] allOf의 인자가 같은 타입이라는 보장도 없고, 수행 중에 에러가 날 수도 있다. 아래 예시는 인자의 타입이 다른 경우라 null이 출력된다
+        // [주의!!] allOf의 인자가 같은 타입이라는 보장도 없고, 수행 중에 에러가 날 수도 있다. Void 타입으로 감싸고 있기 때문에 get()을 하면 null이 나온다.
+        // 제대로 받으려면 번거로워짐..
         CompletableFuture<Void> future9_3 = CompletableFuture.allOf( hello, getIntegerWorld( 1 ) ).thenAccept( System.out::println );
         future9_3.get(); //null 출력!
 
